@@ -1,0 +1,15 @@
+# After 613750th line, data isn't aligned properly. the entire dataset has 6198109 lines
+LAST_LINE = 613750
+
+# Lines will be concatenated if they're less than this threshold in length
+MIN_CHAR_THRESHOLD = 10
+
+# Normalize persian lines using Hazm
+NORMALIZE_PERSIAN = True
+
+# remove the explanations in parentheses
+REMOVE_PARENTHESES = True
+
+REMOVE_EMOJIS = True
+
+REMOVE_PUNCTUATION = False
