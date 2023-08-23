@@ -1,4 +1,4 @@
-resources/*
+resources/OpenSubtitles.en-fa.*
 Pipfile
 .idea
 .DS_Store

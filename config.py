@@ -12,4 +12,7 @@ REMOVE_PARENTHESES = True
 
 REMOVE_EMOJIS = True
 
+# All sorts of punctuation
 REMOVE_PUNCTUATION = False
+# Stuff like -, ...,
+REMOVE_EXTRA_PUNCTUATION = True

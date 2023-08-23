@@ -10,7 +10,6 @@ def prepare_lines(persian_lines: List[str], english_lines: List[str], cleanup: b
     result = []
     current_line = '', ''
     for persian_line, english_line in zip(persian_lines, english_lines):
-        print(persian_line, english_line)
         current_line = (
             current_line[0] + (' ' if current_line[0] else '') + persian_line,
             current_line[1] + (' ' if current_line[1] else '') + english_line
@@ -52,6 +51,10 @@ def remove_punctuation(text):
     return re.sub(pattern, "", text)
 
 
+def remove_extra_punctuation(text):
+    pattern = r""
+
+
 def remove_emojis(text):
     emojis = re.compile("["
                         u"\U0001F600-\U0001F64F"  # emoticons
@@ -74,20 +77,3 @@ def remove_emojis(text):
                         u"\u3030"
                         "]+", re.UNICODE)
     return re.sub(emojis, '', text)
-
-
-if __name__ == '__main__':
-    p = [
-        'سلام!',
-        'چطوری؟ (حالت چطور است)',
-        'سلامتی؟ به امید خداوند؟',
-        'کونت تپله؟!؟😬',
-    ]
-    e = [
-        'Hi!',
-        'How are you?',
-        'is you ok? if god wants',
-        'how thicc are you?!?😬'
-    ]
-
-    print(prepare_lines(p, e, True))
