@@ -7,19 +7,20 @@ normalizer = hazm.normalizer.Normalizer()
 
 
 def prepare_lines(persian_lines: List[str], english_lines: List[str], cleanup: bool = False):
-    result = []
+    results = [], []
     current_line = '', ''
     for persian_line, english_line in zip(persian_lines, english_lines):
+        if cleanup:
+            persian_line, english_line = cleanup_line(persian_line, english_line)
         current_line = (
             current_line[0] + (' ' if current_line[0] else '') + persian_line,
             current_line[1] + (' ' if current_line[1] else '') + english_line
         )
         if len(current_line[0]) >= config.MIN_CHAR_THRESHOLD:
-            if cleanup:
-                current_line = cleanup_line(*current_line)
-            result.append(current_line)
+            results[0].append(current_line[0])
+            results[1].append(current_line[1])
             current_line = '', ''
-    return result
+    return results
 
 
 def cleanup_line(persian_line: str, english_line: str):
@@ -38,6 +39,10 @@ def cleanup_line(persian_line: str, english_line: str):
         persian_line = remove_punctuation(persian_line)
         english_line = remove_punctuation(english_line)
 
+    elif config.REMOVE_EXTRA_PUNCTUATION:
+        persian_line = remove_extra_punctuation(persian_line)
+        english_line = remove_extra_punctuation(english_line)
+
     return persian_line, english_line
 
 
@@ -52,7 +57,14 @@ def remove_punctuation(text):
 
 
 def remove_extra_punctuation(text):
-    pattern = r""
+    if text.startswith('-'):
+        text = text[1:]
+
+    # multiple signs
+    pattern = r"([^\w\s])\1+"
+    text = re.sub(pattern, r"\1", text)
+
+    return text
 
 
 def remove_emojis(text):

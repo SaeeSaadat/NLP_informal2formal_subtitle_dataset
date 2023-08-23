@@ -1,4 +1,7 @@
 import data_cleaner
+import config
+import xlsx_writer
+import tqdm
 
 
 def main():
@@ -7,12 +10,17 @@ def main():
     with open('resources/OpenSubtitles.en-fa.en', 'r') as en_file:
         english_lines = en_file.readlines()
 
-    persian_subset = persian_lines[:1000]
-    english_subset = english_lines[:1000]
+    num_of_batches = len(english_lines) // config.GOOGLE_TRANSLATE_BATCH_SIZE
+    for i in tqdm.tqdm(range(num_of_batches + 1)):
+        max_index = min(len(english_lines) + 1, (i+1) * config.GOOGLE_TRANSLATE_BATCH_SIZE)
+        persian_subset = persian_lines[i*config.GOOGLE_TRANSLATE_BATCH_SIZE:max_index]
+        english_subset = english_lines[i*config.GOOGLE_TRANSLATE_BATCH_SIZE:max_index]
 
-    data = data_cleaner.prepare_lines(persian_subset, english_subset, True)
-    for p, e in data:
-        print(p, '\n    ', e, '\n-----------------------\n')
+        persian_data, english_data = data_cleaner.prepare_lines(persian_subset, english_subset, True)
+        xlsx_writer.write_to_sheet(english_data, f'xlsxs/english/batch_{i}.xlsx')
+        xlsx_writer.write_to_sheet(persian_data, f'xlsxs/persian/batch_{i}.xlsx')
+
+
 
 
 
