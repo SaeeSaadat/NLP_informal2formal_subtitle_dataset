@@ -15,3 +15,5 @@ from english to persian in order to create the `xlxs/translated` files.
 
 Then, we used the `batch_merger.py` script to join the translated files and create the `OpenSubtitles-Informal2Formal.csv` 
 file and finally created the huggingface dataset.
+
+To add the `clean_dataset` to the final dataset, use the `add_clean_dataset.py` script.

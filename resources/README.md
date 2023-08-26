@@ -3,7 +3,7 @@ for starters, you need to download the OpenSubtitles corpus from https://opus.nl
 
 Make sure to use the bottom table to download the corpus in Moses format (Bottom-left triangle). This will give you a file called `OpenSubtitles.en-fa.en` and `OpenSubtitles.en-fa.fa` which are the English and Persian files respectively.
 
-
+The `clean_dataset` is available here, and it's the 10,000 line dataset that's been hand-made for this project.
 ## OpenSubtitle Corpus info
 
  Corpus Name: OpenSubtitles
