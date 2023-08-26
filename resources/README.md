@@ -1,3 +1,11 @@
+## About this directory:
+for starters, you need to download the OpenSubtitles corpus from https://opus.nlpl.eu/OpenSubtitles.php
+
+Make sure to use the bottom table to download the corpus in Moses format (Bottom-left triangle). This will give you a file called `OpenSubtitles.en-fa.en` and `OpenSubtitles.en-fa.fa` which are the English and Persian files respectively.
+
+
+## OpenSubtitle Corpus info
+
  Corpus Name: OpenSubtitles
      Package: OpenSubtitles in Moses format
      Website: http://opus.nlpl.eu/OpenSubtitles-v2018.php
