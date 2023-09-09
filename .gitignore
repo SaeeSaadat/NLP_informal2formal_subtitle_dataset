@@ -4,3 +4,4 @@ Pipfile
 __pycache__
 test.py
 testxl.xlsx
+.env

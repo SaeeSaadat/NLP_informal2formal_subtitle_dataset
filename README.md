@@ -17,3 +17,16 @@ Then, we used the `batch_merger.py` script to join the translated files and crea
 file and finally created the huggingface dataset.
 
 To add the `clean_dataset` to the final dataset, use the `add_clean_dataset.py` script.
+
+<hr>
+
+# Further changes
+To clean up the dataset even more, we have created scripts in the `cleanup` directory.
+Each script takes a csv file as input and outputs a csv file. It can also push to hugging face as a new dataset!
+
+- ##  purge_english.py
+this script will remove any entry that has english characters ([a-zA-Z]) in it. since our model won't be working 
+with these types of inputs.
+* removes 135296 rows
+
+
