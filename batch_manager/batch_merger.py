@@ -2,7 +2,7 @@ import os
 import csv
 import datasets
 from tqdm import tqdm
-import xlsx_reader
+from xlsxs import xlsx_reader
 
 
 def merger():
@@ -10,8 +10,8 @@ def merger():
     This function is used to merge the translated and original batches and create a huggingface dataset from it.
 
     """
-    num_of_files = len([name for name in os.listdir('xlsxs/translated') if name.endswith('.xlsx')])
-    with open('resources/OpenSubtitles-Informal2Formal.csv', 'w') as csv_file:
+    num_of_files = len([name for name in os.listdir('../xlsxs/translated') if name.endswith('.xlsx')])
+    with open('../resources/OpenSubtitles-Informal2Formal.csv', 'w') as csv_file:
         writer = csv.writer(csv_file)
         writer.writerow(['informal', 'formal'])
 

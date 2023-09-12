@@ -16,4 +16,4 @@ def create_alts_dataset(base_dataset: str, limit: int = None):
 
 
 if __name__ == '__main__':
-    create_alts_dataset('../resources/clean_dataset.csv', 100)
+    create_alts_dataset('../resources/clean_dataset.csv', 50)
