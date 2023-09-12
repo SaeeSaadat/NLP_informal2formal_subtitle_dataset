@@ -16,8 +16,8 @@ def merger():
         writer.writerow(['informal', 'formal'])
 
         for i in tqdm(range(num_of_files)):
-            original_lines = xlsx_reader.read_from_xlsx(f'xlsxs/persian/batch_{i}.xlsx')
-            translated_lines = xlsx_reader.read_from_xlsx(f'xlsxs/translated/batch_{i}.xlsx')
+            original_lines = xlsx_reader.read_from_xlsx(f'xlsxs/persian/batch_{i}.xlsx', True)
+            translated_lines = xlsx_reader.read_from_xlsx(f'xlsxs/translated/batch_{i}.xlsx', True)
             original_lines = map(lambda x: x.replace('\n', ''), original_lines)
 
             writer.writerows([[original_line, translated_line] for original_line, translated_line in
