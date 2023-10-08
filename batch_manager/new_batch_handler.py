@@ -12,7 +12,7 @@ from tqdm import tqdm
 import config
 from xlsxs import xlsx_writer, xlsx_reader
 from cleanup import data_cleaner, purge_english
-from alternatives.create_sample_dataset import create_sample_dataset
+from alternatives.create_sample_dataset import create_sample_dataset, create_sample_complement
 
 
 def prepare():
@@ -82,18 +82,43 @@ def final_cleanup(input_file='../resources/full_dataset.csv', output_file='../re
     purge_english.purge_english_rows(input_file, output_file)
 
 
-def get_sample(dataset_file: str, do_final_cleanup=False, sample_size=500):
+def get_sample(dataset_file: str, do_final_cleanup=False, sample_size=500, output_file: str = None):
     if do_final_cleanup:
         final_cleanup(dataset_file, dataset_file.replace('.csv', '_cleanedUp.csv'))
-        create_sample_dataset(dataset_file.replace('.csv', '_cleanedUp.csv'), 99, sample_size)
+        create_sample_dataset(dataset_file.replace('.csv', '_cleanedUp.csv'), 99, sample_size, output_file)
     else:
-        create_sample_dataset(dataset_file, 99, sample_size)
+        create_sample_dataset(dataset_file, 99, sample_size, output_file)
+
+
+def create_train_test_split(handmade_dataset_file: str, full_dataset_file: str, sample_size: int = 500):
+    """
+    This function is used to create the train and test split of the dataset.
+    :param handmade_dataset_file: The handmade dataset file.
+    :param full_dataset_file: The full dataset file.
+    :param sample_size: The size of the sample that we want to create.
+    :return:
+    """
+    # First we need to create the sample dataset.
+    sample_file_name = '../resources/datasets/clean_500_sample.csv'
+    clean_handmade_dataset = '../resources/datasets/handmade_dataset_cleanedUp.csv'  # to purge english stuff!
+
+    final_cleanup(handmade_dataset_file, clean_handmade_dataset)
+    get_sample(clean_handmade_dataset, False, sample_size, sample_file_name)
+
+    # Now we need to create the complement of the sample dataset.
+    with open(sample_file_name, 'r') as csv_file:
+        sample_data = [tuple(row) for row in csv.reader(csv_file)]
+
+    create_sample_complement(clean_handmade_dataset, sample_data,
+                             '../resources/datasets/clean_500_sample_complement.csv')
+    create_sample_complement(full_dataset_file, sample_data, '../resources/datasets/full_dataset_sample_complement.csv')
 
 
 if __name__ == '__main__':
-    prepare()
-    merge()
-    prepare_degarbayan()
-    merge_all_datasets()
-    final_cleanup()
-    get_sample('../resources/FullDataset-FinalCleanup.csv', False, 500)
+    # prepare()
+    # merge()
+    # prepare_degarbayan()
+    # merge_all_datasets()
+    # final_cleanup()
+    # get_sample('../resources/FullDataset-FinalCleanup.csv', False, 500)
+    create_train_test_split('../resources/handmade_dataset.csv', '../resources/FullDataset-FinalCleanup.csv', 500)

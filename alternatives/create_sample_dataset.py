@@ -7,6 +7,8 @@ To create the full dataset, first run create_full_dataset.py script.
 import csv
 import random
 
+import tqdm
+
 
 def count_lines_in_csv_file(file_path: str):
     with open(file_path, 'r') as csv_file:
@@ -36,10 +38,30 @@ def create_sample_dataset(full_dataset_file: str, rand_seed: int, sample_size: i
         writer.writerows([(row[0],) for row in data])
 
 
+def create_sample_complement(full_dataset_file: str, sample_data: list, output_file: str = None):
+    """
+    This method will create full_dataset - sample_data
+    """
+    full_count, complement_count = 1, 0
+    output_file_name = output_file if output_file else full_dataset_file.replace('.csv', '_sample_complement.csv')
+    sample_set = set(sample_data)
+    with open(full_dataset_file, 'r') as dataset_file:
+        with open(output_file_name, 'w') as output_csv:
+            reader = csv.reader(dataset_file)
+            writer = csv.writer(output_csv)
+            writer.writerow(next(reader))  # First row
+            for row in tqdm.tqdm(reader):
+                full_count += 1
+                if tuple(row) not in sample_set:
+                    writer.writerow(row)
+                    complement_count += 1
+    print(f"Full count: {full_count}, complement count: {complement_count}")
+
+
 if __name__ == '__main__':
     # random_seeds = (94, 32, 12)
-    random_seeds = (94,)
-    for s in random_seeds:
-        random.seed(s)
-        # create_sample_dataset('../resources/full_dataset.csv', s)
-        create_sample_dataset('../resources/New-OpenSubtitle-Informal2Formal-PersianOnly.csv', s)
+    # random_seeds = (94,)
+    # for s in random_seeds:
+    #     random.seed(s)
+    #     create_sample_dataset('../resources/New-OpenSubtitle-Informal2Formal-PersianOnly.csv', s)
+    print("no main")
