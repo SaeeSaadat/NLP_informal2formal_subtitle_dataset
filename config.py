@@ -4,7 +4,8 @@ LAST_LINE = 613750
 # Lines will be concatenated if they're less than this threshold in length
 MIN_CHAR_THRESHOLD = 40
 
-GOOGLE_TRANSLATE_BATCH_SIZE = 20000
+GOOGLE_TRANSLATE_BATCH_SIZE = 150_000
+# GOOGLE_TRANSLATE_BATCH_SIZE = 1_048
 
 # Normalize persian lines using Hazm
 NORMALIZE_PERSIAN = True

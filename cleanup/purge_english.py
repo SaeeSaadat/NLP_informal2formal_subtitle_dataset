@@ -22,8 +22,14 @@ def count_rows_with_english_words(csv_file):
     return count, all_rows
 
 
+def replace_english_digits_with_persian(text):
+    return text.replace('0', '۰').replace('1', '۱').replace('2', '۲').replace('3', '۳').replace('4', '۴') \
+        .replace('5', '۵').replace('6', '۶').replace('7', '۷').replace('8', '۸').replace('9', '۹')
+
+
 def purge_english_rows(input_csv, output_csv):
     skipped_rows = 0
+    all_rows_count = 0
 
     with (open(input_csv, 'r', encoding='utf-8') as input_file,
           open(output_csv, 'w', encoding='utf-8', newline='') as output_file):
@@ -31,11 +37,15 @@ def purge_english_rows(input_csv, output_csv):
         writer = csv.writer(output_file)
 
         for row in reader:
+            all_rows_count += 1
             if len(row) >= 2 and (contains_english_word(row[0]) or contains_english_word(row[1])):
                 skipped_rows += 1
             else:
-                writer.writerow(row)
-        print("--- Skipped rows:", skipped_rows, ' ---')
+                writer.writerow((
+                    replace_english_digits_with_persian(row[0]),
+                    replace_english_digits_with_persian(row[1])
+                ))
+        print("--- Skipped rows:", skipped_rows, ' out of ', all_rows_count, ' ---')
 
 
 def push_dataset_to_huggingface(csv_file: str):

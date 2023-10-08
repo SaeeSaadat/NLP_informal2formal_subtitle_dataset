@@ -3,6 +3,7 @@ import re
 import openpyxl
 from hazm import SentenceTokenizer
 from xlsxs import xlsx_writer, xlsx_reader
+from cleanup.data_cleaner import split_sentences_by_punkt
 
 
 def divide_excel_file(xlsx_file: str, section_count: int):
@@ -20,19 +21,6 @@ def divide_excel_file(xlsx_file: str, section_count: int):
             new_sheet.append([cell.value for cell in row])
         new_sheet.title = f'section_{i}'
         new_sheet.parent.save(f'../resources/handmade_dataset/sections/dirty_section_{i}.xlsx')
-
-
-def split_sentences_by_punkt(text: str):
-    separators = r'\.{3}|\.|\,|\?|\n|؟|\!|؛'
-    indices = [match.end() for match in re.finditer(separators, text)]
-    last_index = 0
-    result = []
-    for idx in indices:
-        result.append(text[last_index:idx])
-        last_index = idx
-    if last_index != len(text):
-        result.append(text[last_index:])
-    return result
 
 
 def prepare_long_dataset(input_file: str):

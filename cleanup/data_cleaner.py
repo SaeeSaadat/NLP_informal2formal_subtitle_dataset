@@ -1,6 +1,9 @@
 from typing import List
 import hazm
 import re
+
+import tqdm
+
 import config
 
 normalizer = hazm.normalizer.Normalizer()
@@ -20,6 +23,47 @@ def prepare_lines(persian_lines: List[str], english_lines: List[str], cleanup: b
             results[0].append(current_line[0])
             results[1].append(current_line[1])
             current_line = '', ''
+    return results
+
+
+def prepare_lines_persian_only(persian_lines: List[str], cleanup: bool = False):
+    results = []
+    current_line = ''
+    for row in tqdm.tqdm(persian_lines):
+        lines = split_sentences_by_punkt(row)
+        for persian_line in lines:
+            if len(persian_line) < 2:
+                continue
+            if cleanup:
+                persian_line = cleanup_line(persian_line, '')[0]
+            current_line = current_line + (' ' if current_line else '') + persian_line
+            if len(current_line) >= config.MIN_CHAR_THRESHOLD:
+                results.append(current_line)
+                current_line = ''
+    return results
+
+
+def prepare_persian_informal_formal_tuples(data: List[tuple], cleanup: bool = False):
+    results = []
+    for row in tqdm.tqdm(data):
+        informal_splitted = split_sentences_by_punkt(row[0])
+        formal_splitted = split_sentences_by_punkt(row[1])
+
+        if len(informal_splitted) != len(formal_splitted):
+            if cleanup:
+                informal_line, formal_line = cleanup_line(row[0], row[1])
+            else:
+                informal_line, formal_line = row[0], row[1]
+            results.append((informal_line, formal_line))
+
+        else:
+            for informal, formal in zip(informal_splitted, formal_splitted):
+                if cleanup:
+                    informal_line, _ = cleanup_line(informal, '')
+                    formal_line, _ = cleanup_line(formal, '')
+                else:
+                    informal_line, formal_line = informal, formal
+                results.append((informal_line, formal_line))
     return results
 
 
@@ -64,6 +108,9 @@ def remove_extra_punctuation(text):
     pattern = r"([^\w\s])\1+"
     text = re.sub(pattern, r"\1", text)
 
+    # This weird pattern of . ? at the end of the sentence
+    text = re.sub(r"\.\s*\?|\?\s*\.|\.\s*؟|؟\s*\.", "؟", text)
+
     return text
 
 
@@ -89,3 +136,16 @@ def remove_emojis(text):
                         u"\u3030"
                         "]+", re.UNICODE)
     return re.sub(emojis, '', text)
+
+
+def split_sentences_by_punkt(text: str):
+    separators = r'\.{3}|\.|\,|\?|\n|؟|\!|؛|\n'
+    indices = [match.end() for match in re.finditer(separators, text)]
+    last_index = 0
+    result = []
+    for idx in indices:
+        result.append(text[last_index:idx] if text[idx - 1] != '\n' else text[last_index:idx - 1])
+        last_index = idx
+    if last_index != len(text):
+        result.append(text[last_index:])
+    return result
