@@ -24,7 +24,11 @@ def call_farsiyar(text):
     querystring = {"apikey": api_key}
     response = requests.request("GET", url, params=querystring)
     data = json.loads(response.text)
-    token = data['token']
+    try:
+        token = data['token']
+    except TypeError as e:
+        print(data)
+        raise e
 
     url = base_url + "TextRefinement/FormalConverter"
     headers = {
@@ -44,7 +48,7 @@ def add_farsiyar_to_dataset(base_dataset: str, limit: int = None):
     first_row_flag = True
     with open(base_dataset, 'r', encoding='utf-8') as base_file:
         reader = csv.reader(base_file)
-        with open('../resources/alternatives.csv', 'w', encoding='utf-8') as output_file:
+        with open('../resources/datasets/clean_500_sample_farsiyar.csv', 'w', encoding='utf-8') as output_file:
             writer = csv.writer(output_file)
             for row in tqdm.tqdm(reader):
                 if first_row_flag:
@@ -59,4 +63,4 @@ def add_farsiyar_to_dataset(base_dataset: str, limit: int = None):
 
 
 if __name__ == '__main__':
-    add_farsiyar_to_dataset('../resources/clean_dataset.csv', limit=10)
+    add_farsiyar_to_dataset('../resources/datasets/clean_500_sample_informal.csv', )
